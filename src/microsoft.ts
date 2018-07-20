@@ -3,10 +3,10 @@ import * as rp from 'request-promise';
 export class MicrosoftAPI {
   private static baseURL = 'https://graph.microsoft.com/v1.0/';
 
-  constructor(private accessToken) {
+  constructor(private accessToken: string) {
   }
 
-  static async sendTeamsMessage(webhookURL, title, summary) {
+  static async sendTeamsMessage(webhookURL: string, title: string, summary: string) {
     const webhookPayload = {
       '@type': 'MessageCard',
       '@context': 'http://schema.org/extensions',
@@ -29,7 +29,7 @@ export class MicrosoftAPI {
     return this.request('me');
   }
 
-  async getTable(workbookPath, table) {
+  async getTable(workbookPath: string, table: string) {
     const workbookId = await this.getFileId(workbookPath);
     const resp = await this.request(`me/drive/items/${workbookId}/workbook/tables/${table}/columns`);
     const numberOfRows = resp.value[0].values.length - 1;
@@ -46,12 +46,12 @@ export class MicrosoftAPI {
     return result;
   }
 
-  async getFileId(filePath) {
+  async getFileId(filePath: string) {
     const response = await this.request(`me/drive/root:${filePath}`);
     return response.id;
   }
 
-  async request(path, method = 'GET') {
+  async request(path: string, method = 'GET') {
     const options = {
       method,
       uri: encodeURI(MicrosoftAPI.baseURL + path),

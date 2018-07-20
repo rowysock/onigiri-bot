@@ -9,7 +9,7 @@ export const config = {
     Tuna: 8,
     Ebi: 9,
     Salmon: 9
-  },
+  } as { [name: string]: number },
   webhookURL: process.env.WEBHOOK_URL,
   splitwiseToken: process.env.SPLITWISE_TOKEN,
   splitwiseGroup: process.env.SPLITWISE_GROUP,

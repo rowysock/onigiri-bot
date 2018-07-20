@@ -1,12 +1,18 @@
 import * as rp from 'request-promise';
 
+export interface ExpenseUser {
+  email: string,
+  paid_share: number,
+  owed_share: number,
+}
+
 export class SplitwiseAPI {
   private static baseURL = 'https://secure.splitwise.com/api/v3.0/';
 
-  constructor(private token) {
+  constructor(private token: string) {
   }
 
-  async createExpense(cost, description, groupId, users) {
+  async createExpense(cost: number, description: string, groupId: string, users: ExpenseUser[]) {
     return this.request('create_expense', 'POST', {
       payment: false,
       cost,
@@ -18,7 +24,7 @@ export class SplitwiseAPI {
     });
   }
 
-  async addUserToGroup(groupId, firstName, lastName, email) {
+  async addUserToGroup(groupId: string, firstName: string, lastName: string, email: string) {
     return this.request('add_user_to_group', 'POST', {
       group_id: groupId,
       first_name: firstName,
@@ -27,7 +33,7 @@ export class SplitwiseAPI {
     });
   }
 
-  async request(path, method = 'GET', payload = {}) {
+  async request(path: string, method = 'GET', payload = {}) {
     const options = {
       method,
       qs: this._objectToQuery(payload),
@@ -41,10 +47,10 @@ export class SplitwiseAPI {
     return rp(options);
   }
 
-  _objectToQuery(o) {
-    const result = {};
+  _objectToQuery(o: any) {
+    const result = {} as { [key: string]: string };
 
-    function convert(nested, prefix = '') {
+    function convert(nested: any, prefix = '') {
       for (let key of Object.keys(nested)) {
         const value = nested[key];
         if (value instanceof Array) {

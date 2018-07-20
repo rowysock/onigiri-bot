@@ -1,6 +1,6 @@
 import * as express from 'express';
+import { NextFunction, Request, Response } from 'express';
 import * as httpContext from 'express-http-context';
-import { Request, Response } from 'express/lib/express';
 import { config } from './config';
 import { MicrosoftAPI } from './microsoft';
 import { SplitwiseAPI } from './splitwise';
@@ -8,7 +8,7 @@ import { SplitwiseAPI } from './splitwise';
 const app = express();
 app.use(httpContext.middleware);
 
-app.use((req: Request, res: Response, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   let msToken = req.header('Authorization').substring('Bearer '.length);
   console.log('msToken', msToken);
   httpContext.set('microsoftAPI', new MicrosoftAPI(msToken));
@@ -107,16 +107,16 @@ async function getOrders(microsoftAPI: MicrosoftAPI) {
   return orders;
 }
 
-function getShortName(fullName) {
+function getShortName(fullName: string) {
   const parts = fullName.split(' ');
   return `${parts[0]} ${parts[1][0]}.`;
 }
 
-function today(td) {
+function today(td: Date) {
   const d = new Date();
   return td.getDate() === d.getDate() && td.getMonth() === d.getMonth() && td.getFullYear() === d.getFullYear();
 }
 
-function getJsDateFromExcel(excelDate) {
+function getJsDateFromExcel(excelDate: number) {
   return new Date(Math.round((excelDate - (25567 + 2)) * 86400 * 1000));
 }

@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
+    "noImplicitAny": true,
     "lib": [
       "es2015"
     ],
-    "outDir": "target"
+    "outDir": "target",
+    "sourceRoot": "src"
   }
 }
