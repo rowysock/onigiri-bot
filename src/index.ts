@@ -52,6 +52,7 @@ app.listen(process.env.PORT || 8080, () => {
 
 async function addToSplitwise(microsoftAPI: MicrosoftAPI, splitwiseAPI: SplitwiseAPI) {
   const payer = await microsoftAPI.getMe();
+  console.log('payer', payer);
   let splitwiseMap = await microsoftAPI.getTable('/splitwiseMap.xlsx', 'splitwise');
   const orders = await getOrders(microsoftAPI);
   let sum = orders.map(o => o.sum).reduce((a, b) => a + b);
