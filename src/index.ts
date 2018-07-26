@@ -56,20 +56,26 @@ async function addToSplitwise(microsoftAPI: MicrosoftAPI, splitwiseAPI: Splitwis
   const orders = await getOrders(microsoftAPI);
   let sum = orders.map(o => o.sum).reduce((a, b) => a + b);
   const users = [];
+  console.log('orders', orders);
   for (let order of orders) {
     const firstName = order['Nazwa'].split(' ')[0];
     const lastName = order['Nazwa'].split(' ')[1];
     const syncronMail = order['Adres e-mail'];
     const mapRecord = splitwiseMap.find(r => r['syncron mail'] === syncronMail);
     const splitwiseMail = mapRecord ? mapRecord['splitwise mail'] : syncronMail;
-    await splitwiseAPI.addUserToGroup(config.splitwiseGroup, firstName, lastName, splitwiseMail);
+    console.log('Adding user to group', firstName, lastName, splitwiseMail);
+    let addUserResponse = await splitwiseAPI.addUserToGroup(config.splitwiseGroup, firstName, lastName, splitwiseMail);
+    console.log(addUserResponse);
     users.push({
       email: splitwiseMail,
       paid_share: payer.mail === syncronMail ? sum : 0,
       owed_share: order.sum,
     });
   }
-  await splitwiseAPI.createExpense(sum, 'onigiri', config.splitwiseGroup, users);
+  console.log('users', users);
+  console.log('Creating expense');
+  const expenseResponse = await splitwiseAPI.createExpense(sum, 'onigiri', config.splitwiseGroup, users);
+  console.log(expenseResponse);
 }
 
 async function getSummary(microsoftAPI: MicrosoftAPI) {
