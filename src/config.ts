@@ -13,5 +13,8 @@ export const config = {
   webhookURL: process.env.WEBHOOK_URL,
   splitwiseToken: process.env.SPLITWISE_TOKEN,
   splitwiseGroup: process.env.SPLITWISE_GROUP,
-  workbook: process.env.WORKBOOK
+  //Name od the workbook connected to form
+  workbook: process.env.WORKBOOK,
+  //ID of a drive on which workbook is stored
+  workbookDriveID: process.env.WORKBOOK_DRIVE_ID,
 };
