@@ -33,7 +33,7 @@ export class MicrosoftAPI {
   async getTable(workbookPath: string, table: string) {
     const workbookId = await this.getFileId(workbookPath);
     console.log(`Fetching table ${table} from workbook ${workbookId}`);
-    const resp = await this.request(`me/drive/items/${workbookId}/workbook/tables/${table}/columns`);
+    const resp = await this.request(`drives/${config.workbookDriveID}/items/${workbookId}/workbook/tables/${table}/columns`);
     const numberOfRows = resp.value[0].values.length - 1;
     const result = Array(numberOfRows);
     for (let index = 0; index < numberOfRows; index++) {
@@ -50,7 +50,7 @@ export class MicrosoftAPI {
 
   async getFileId(filePath: string) {
     console.log('Looking for id of', filePath);
-    const response = await this.request(`drive/${config.workbookDriveID}/root:${filePath}`);
+    const response = await this.request(`drives/${config.workbookDriveID}/root:${filePath}`);
     return response.id;
   }
 
