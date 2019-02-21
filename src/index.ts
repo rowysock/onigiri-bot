@@ -57,6 +57,7 @@ async function addToSplitwise(microsoftAPI: MicrosoftAPI, splitwiseAPI: Splitwis
   const orders = await getOrders(microsoftAPI);
   let sum = orders.map(o => o.sum).reduce((a, b) => a + b);
   const users = [];
+  let payerBuys = false;
   console.log('orders', orders);
   for (let order of orders) {
     const firstName = order['Nazwa'].split(' ')[0];
@@ -64,6 +65,7 @@ async function addToSplitwise(microsoftAPI: MicrosoftAPI, splitwiseAPI: Splitwis
     const syncronMail = order['Adres e-mail'];
     const mapRecord = splitwiseMap.find(r => r['syncron mail'] === syncronMail);
     const splitwiseMail = mapRecord ? mapRecord['splitwise mail'] : syncronMail;
+    payerBuys = payer.mail === syncronMail || payerBuys;
     console.log('Adding user to group', firstName, lastName, splitwiseMail);
     let addUserResponse = await splitwiseAPI.addUserToGroup(config.splitwiseGroup, firstName, lastName, splitwiseMail);
     console.log(addUserResponse);
@@ -71,6 +73,15 @@ async function addToSplitwise(microsoftAPI: MicrosoftAPI, splitwiseAPI: Splitwis
       email: splitwiseMail,
       paid_share: payer.mail === syncronMail ? sum : 0,
       owed_share: order.sum,
+    });
+  }
+  if(!payerBuys) { //FIX when payer not buys onigiri
+    const mapRecord = splitwiseMap.find(r => r['syncron mail'] === payer.mail);
+    const splitwiseMail = mapRecord ? mapRecord['splitwise mail'] : payer.mail;
+    users.push({
+      email: splitwiseMail,
+      paid_share: sum,
+      owed_share: 0,
     });
   }
   console.log('users', users);
